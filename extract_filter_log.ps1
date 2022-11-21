@@ -4,10 +4,9 @@
 # @Date: 21/11/2022
 # @Author: luciano@citrait.com.br
 # @Description: Este script le da linha de comandos o caminho do arquivo filter.log
-#   e extrai os ips das regras que bloquearam na interface wan (em0) pacotes ipv4
-#   que não foram solicitados.
+#   e extrai os ips que foram bloqueados.
 # @Usage: powershell .\extract_filter_log.ps1 C:\logs\filter.log.0
-#  ao final da execução, será gerado o arquivo ips.txt na mesma pasta.
+#  ao final da execução, será gerado o arquivo ips.txt na mesma pasta deste script.
 
 Write-Host "Starting script of ip extraction..."
 # Lendo o caminho do arquivo de log (filter.log) como argumento da linha de comando
