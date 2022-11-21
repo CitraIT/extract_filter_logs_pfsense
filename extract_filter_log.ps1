@@ -23,10 +23,10 @@ Remove-Item $output_file -Force -Confirm:$false -EA SilentlyContinue
 # do the magic \0/
 Write-Host "Extracting addresses..."
 Get-Content $input_file | Where-Object{
-	# Separate (split) the fields from log entry
+	# Separar (split) os campos de cada entrada de log
 	$fields = $_.Split(",");
 	
-	# filter by direction (in), action (blocked), IPVersion (ipv4), proto (tcp), and source addr not match a private network.
+	# filtra por direction (in), action (blocked), IPVersion (ipv4), proto (tcp), e source addr que não é de uma rede privada.
 	if($fields[7] -eq "in" `
 		-and $fields[6] -eq "block" `
 		-and $fields[8] -eq "4" `
