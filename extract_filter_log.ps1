@@ -9,28 +9,33 @@
 # @Usage: powershell .\extract_filter_log.ps1 C:\logs\filter.log.0
 #  ao final da execução, será gerado o arquivo ips.txt na mesma pasta.
 
+Write-Host "Starting script of ip extraction..."
+# Lendo o caminho do arquivo de log (filter.log) como argumento da linha de comando
 $input_file = $args[0]
+
+# Arquivo onde salvar a lista de ips extraídos do log de firewall do pfsense.
 $output_file = "ips.txt"
+Write-Host "Output list of extracted ip addresses will be on file $output_file"
 
-# Remover o arquivo de saida se existir;
-
+# Remover o arquivo de saida se existir para criar um novo
+Write-Host "Removing older $output_file"
 Remove-Item $output_file -Force -Confirm:$false -EA SilentlyContinue
 
+# do the magic \0/
+Write-Host "Extracting addresses..."
 Get-Content $input_file | Where-Object{
+	# Separate (split) the fields from log entry
 	$fields = $_.Split(",");
+	
+	# filter by direction (in), action (blocked), IPVersion (ipv4), proto (tcp), and source addr not match a private network.
 	if($fields[7] -eq "in" `
-		-and $fields[4] -eq "em0" `
 		-and $fields[6] -eq "block" `
 		-and $fields[8] -eq "4" `
-		-and $fields[16] -eq "tcp"){
+		-and $fields[16] -eq "tcp" `
+		-and $fields[18] -notmatch '(^192\.168|^10|^172)'){
 			return $true
 	}Else{ 
 		return $false 
 	}
 } | Select-Object @{"Name"="Source"; Expression={$_.Split(",")[18]}} | `
 	Select-Object -ExpandProperty Source | Add-Content $output_file
-
-
-	
-	
-	
